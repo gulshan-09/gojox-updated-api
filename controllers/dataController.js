@@ -78,8 +78,9 @@ exports.advancedatafilter = async (req, res) => {
     const ratingMin = rating.toString();
     const ratingMax = (parseInt(rating) + 1).toString();
 
-    const newMatchLetter = letter.slice(0, 1);
-    const cleanedKeyword = keyword.replace(/[\s]+|[^\w\s-]{2,5}/g, "-");
+    const newMatchLetter = letter?.slice(0, 1);
+    const cleanedKeyword = keyword?.replace(/[\s]+|[^\w\s-]{2,5}/g, "-");
+    const otherTitleKeyword = keyword?.replace(/[^\w\s\-]/g, "");
 
     const new_age_rating = age_rating?.replace(/-/g, ' ')?.toUpperCase();
 
@@ -93,7 +94,7 @@ exports.advancedatafilter = async (req, res) => {
     const query = {
         $or: [
             { embed_title: { $regex: `${cleanedKeyword}`, $options: "i" } },
-            { other_title: { $regex: `${cleanedKeyword}`, $options: "i" } }
+            { other_title: { $regex: `${otherTitleKeyword}`, $options: "i" } }
         ],
         title: { $regex: `^${newMatchLetter}`, $options: "i" },
         genre: { $in: genreArray.map(g => new RegExp(g, 'i')) },
