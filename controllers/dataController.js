@@ -30,29 +30,19 @@ exports.datapost = async (req, res) => {
 
 exports.getData = async (req, res) => {
     try {
-        const maxLimit = 20;
-        const { page = 1, limit = 20 } = req.query;
-        const limitedLimit = Math.min(parseInt(limit), maxLimit);
-        const skip = (page - 1) * limitedLimit;
-
-        // Get total number of documents
-        const totalDocs = await dataJson.countDocuments();
-        const totalPages = Math.ceil(totalDocs / limitedLimit);
-
-        // Fetch data based on pagination
-        const movies = await dataJson.find().skip(skip).limit(limitedLimit).exec();
+        // Fetch all data in descending order of _id field (assuming _id is the unique identifier for your documents)
+        const allData = await dataJson.find().sort({ _id: -1 }).exec();
 
         res.status(200).json({
             success: 200,
-            totalPages,
-            results: movies,
+            totalResults: allData.length,
+            results: allData,
         });
     } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
-
 
 
 
@@ -97,7 +87,7 @@ exports.advancedatafilter = async (req, res) => {
             { other_title: { $regex: `${otherTitleKeyword}`, $options: "i" } }
         ],
         title: { $regex: `^${newMatchLetter}`, $options: "i" },
-        genre: { $in: genreArray.map(g => new RegExp(g, 'i')) },
+        genre: { $all: genreArray.map(g => new RegExp(g, 'i')) },
         country: { $regex: country, $options: "i" },
         premiered: { $regex: premiered, $options: "i" },
         date: { $regex: year, $options: "i" },
@@ -114,13 +104,24 @@ exports.advancedatafilter = async (req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     const limit = Math.min(parseInt(req.query.limit) || 20, 20);
-    const skip = (page - 1) * limit;
+    // const skip = (page - 1) * limit;
 
     try {
         const totalDocs = await dataJson.countDocuments(query);
         const totalPages = Math.ceil(totalDocs / limit);
 
-        const results = await dataJson.find(query).skip(skip).limit(limit);
+        // Calculate skip value for reverse pagination
+        const remainder = totalDocs % limit;
+
+        // const skip = ((totalPages - page - 1) * limit) + remainder; 
+        const skip = totalPages === page ? (totalPages - page) * limit : ((totalPages - page - 1) * limit) + remainder;
+
+        let actualLimit = limit;
+        if (page === totalPages && remainder > 0) {
+            actualLimit = remainder;
+        }
+
+        const results = await dataJson.find(query).skip(skip).limit(actualLimit);
 
         res.status(200).json({
             success: true,
