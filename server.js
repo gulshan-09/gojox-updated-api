@@ -19,7 +19,12 @@ app.get("/", (req, res) => {
 // Middleware to verify API key and host
 function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
+  const host = req.headers.host;
   
+  // Check if request is coming from zorox.fun
+  if (host !== "zorox.fun") {
+    return res.status(403).json({ message: "Forbidden. Access denied from this domain." });
+  }
   // Check if API key is valid
   if (apiKey !== API_KEY) {
       return res.status(401).json({ message: "Unauthorized. Invalid API key." });
