@@ -22,11 +22,8 @@ function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
   const host = req.headers.host;
 
-  // Extracting hostname from the host header
-  const hostname = host.split(":")[0];
-
   // Check if request is coming from one of the allowed domains
-  if (!allowedDomains.includes(hostname)) {
+  if (host !== "zorox.fun") {
     return res.status(403).json({ message: "Forbidden. Access denied from this domain." });
   }
   
