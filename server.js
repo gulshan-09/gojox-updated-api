@@ -8,7 +8,6 @@ const controllers = require("./controllers/dataController");
 
 const PORT = process.env.PORT || "5001";
 const API_KEY = process.env.API_KEY;
-const allowedDomains = ["zorox.fun", "gojoo.fun", "huramovies.fun", "streamixz.com", "gojox.cloud"];
 
 app.use(cors());
 app.use(express.json());
@@ -20,12 +19,7 @@ app.get("/", (req, res) => {
 // Middleware to verify API key and host
 function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
-  const host = req.headers.host;
-
-  // Check if request is coming from one of the allowed domains
-  if (host !== "zorox.fun") {
-    return res.status(403).json({ message: "Forbidden. Access denied from this domain." });
-  }
+  
   
   // Check if API key is valid
   if (apiKey !== API_KEY) {
