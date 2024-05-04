@@ -22,10 +22,7 @@ function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
   const host = req.headers.host;
   
-  // Check if host is allowed
-  if (!ALLOWED_HOSTS.includes(host)) {
-    return res.status(403).json({ message: "Forbidden. Host not allowed." });
-  }
+  
 
   // Check if API key is valid
   if (apiKey !== API_KEY) {
