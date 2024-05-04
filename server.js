@@ -20,9 +20,10 @@ app.get("/", (req, res) => {
 function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
   const host = req.headers.host;
+  const finalHost = host[0];
   
   // Check if request is coming from zorox.fun
-  if (host !== "zorox.fun" && host !== "gojoo.fun") {
+  if (finalHost !== "zorox.fun" && finalHost !== "gojoo.fun") {
     return res.status(403).json({ message: "Forbidden. Access denied from this domain." });
   }
 
