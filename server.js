@@ -8,7 +8,7 @@ const controllers = require("./controllers/dataController");
 
 const PORT = process.env.PORT || "5001";
 const API_KEY = process.env.API_KEY;
-const ALLOWED_HOSTS = ["zorox.fun", "gojoo.fun", "huramovies.fun", "streamixz.com", "gojox.cloud"];
+const ALLOWED_HOSTS = "zorox.fun";
 
 app.use(cors());
 app.use(express.json());
@@ -20,7 +20,12 @@ app.get("/", (req, res) => {
 // Middleware to verify API key and host
 function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
-
+  const host = req.headers.host;
+  
+  // Check if host is allowed
+  if (host !== ALLOWED_HOST) {
+    return res.status(403).json({ message: "Forbidden. Host not allowed." });
+  }
   // Check if API key is valid
   if (apiKey !== API_KEY) {
       return res.status(401).json({ message: "Unauthorized. Invalid API key." });
