@@ -22,7 +22,7 @@ function verifyRequest(req, res, next) {
   const host = req.headers.host;
   
   // Check if request is coming from zorox.fun
-  if (host !== "zorox.fun" || host !== "gojoo.fun") {
+  if (host !== "zorox.fun" && host !== "gojoo.fun") {
     return res.status(403).json({ message: "Forbidden. Access denied from this domain." });
   }
 
