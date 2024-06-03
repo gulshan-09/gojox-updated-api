@@ -32,7 +32,7 @@ function verifyRequest(req, res, next) {
   }
 
   // Check if the request is from the allowed host
-  if (host !== ALLOWED_HOST && originHost !== ALLOWED_HOST) {
+  if (host !== ALLOWED_HOST) {
     return res.status(403).json({ message: "Forbidden. Access is allowed only from gojoo.fun." });
   }
 
