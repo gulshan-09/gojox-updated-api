@@ -8,7 +8,7 @@ const controllers = require("./controllers/dataController");
 
 const PORT = process.env.PORT || "5001";
 const API_KEY = process.env.API_KEY;
-const ALLOWED_HOST = "gojoo";
+const ALLOWED_HOST = "gojoo.fun";
 
 app.use(cors());
 app.use(express.json());
@@ -20,7 +20,11 @@ app.get("/", (req, res) => {
 // Middleware to verify API key and host
 function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
+
+  // Extract hostname from 'Host' header and 'Origin' header if it exists
   const host = req.hostname; // This will give the hostname part of the Host header
+  const origin = req.get('Origin');
+  const originHost = origin ? new URL(origin).hostname : null;
 
   // Check if API key is valid
   if (apiKey !== API_KEY) {
@@ -28,7 +32,7 @@ function verifyRequest(req, res, next) {
   }
 
   // Check if the request is from the allowed host
-  if (host !== ALLOWED_HOST) {
+  if (host !== ALLOWED_HOST && originHost !== ALLOWED_HOST) {
     return res.status(403).json({ message: "Forbidden. Access is allowed only from gojoo.fun." });
   }
 
