@@ -9,6 +9,7 @@ const controllers = require("./controllers/dataController");
 const PORT = process.env.PORT || "5001";
 const API_KEY = process.env.API_KEY;
 const ALLOWED_HOST = "gojoo.fun";
+const ALLOWED_HOST_ZORO = "zorox.fun";
 
 app.use(cors());
 app.use(express.json());
@@ -38,7 +39,7 @@ function verifyRequest(req, res, next) {
   }
 
   // Check if the request is from the allowed host
-  if (normalizedHost !== ALLOWED_HOST && normalizedOriginHost !== ALLOWED_HOST) {
+  if (normalizedHost !== ALLOWED_HOST && normalizedOriginHost !== ALLOWED_HOST && normalizedHost !== ALLOWED_HOST_ZORO && normalizedOriginHost !== ALLOWED_HOST_ZORO) {
     return res.status(403).json({ message: "Forbidden. Access is allowed only from gojoo.fun." });
   }
 
