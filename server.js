@@ -20,11 +20,7 @@ app.get("/", (req, res) => {
 // Middleware to verify API key and host
 function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
-
-  // Extract hostname from 'Host' and 'Origin' headers
   const host = req.hostname; // This will give the hostname part of the Host header
-  const origin = req.get('Origin');
-  const originHost = origin ? new URL(origin).hostname : null;
 
   // Check if API key is valid
   if (apiKey !== API_KEY) {
