@@ -22,26 +22,11 @@ app.get("/", (req, res) => {
 function verifyRequest(req, res, next) {
   const apiKey = req.query.apikey;
 
-  // Extract hostname from 'Host' header
-  const host = req.hostname; // This will give the hostname part of the Host header
-  
-  // Normalize the hostname to remove 'www.' if present
-  const normalizedHost = host.startsWith('www.') ? host.substring(4) : host;
-
-  // Extract and normalize hostname from 'Origin' header if it exists
-  const origin = req.get('Origin');
-  const originHost = origin ? new URL(origin).hostname : null;
-  const normalizedOriginHost = originHost && originHost.startsWith('www.') ? originHost.substring(4) : originHost;
-
   // Check if API key is valid
   if (apiKey !== API_KEY) {
     return res.status(401).json({ message: "Unauthorized. Invalid API key." });
   }
 
-  // Check if the request is from the allowed host
-  if (normalizedHost !== ALLOWED_HOST && normalizedOriginHost !== ALLOWED_HOST && normalizedHost !== ALLOWED_HOST_ZORO && normalizedOriginHost !== ALLOWED_HOST_ZORO) {
-    return res.status(403).json({ message: "Forbidden. Access is allowed only from gojoo.fun." });
-  }
 
   next();
 }
